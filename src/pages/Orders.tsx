@@ -20,6 +20,8 @@ export default function Orders() {
     handleTableChange,
     handleSearch,
     handleTenantFilter,
+    handleStatusFilter,
+    handleCurrencyFilter,
     handlePageSizeChange,
   } = useOrders()
 
@@ -34,6 +36,8 @@ export default function Orders() {
         tenantsLoading={tenantsLoading}
         onSearch={handleSearch}
         onTenantChange={handleTenantFilter}
+        onStatusChange={handleStatusFilter}
+        onCurrencyChange={handleCurrencyFilter}
       />
 
       {ordersError ? (

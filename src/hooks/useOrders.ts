@@ -6,7 +6,12 @@ import type {
   SorterResult,
   TableCurrentDataSource,
 } from 'antd/es/table/interface'
-import { fetchOrders, type Order } from '../api/orders'
+import {
+  fetchOrders,
+  type Order,
+  type OrderStatus,
+  type OrderCurrency,
+} from '../api/orders'
 
 export function useOrders() {
   const [page, setPage] = useState(1)
@@ -14,9 +19,20 @@ export function useOrders() {
   const [order, setOrder] = useState<'asc' | 'desc'>('desc')
   const [search, setSearch] = useState('')
   const [tenantIds, setTenantIds] = useState<number[]>([])
+  const [statuses, setStatuses] = useState<OrderStatus[]>([])
+  const [currencies, setCurrencies] = useState<OrderCurrency[]>([])
 
   const { data, isLoading, isFetching, isError, error } = useQuery({
-    queryKey: ['orders', page, limit, order, search, tenantIds],
+    queryKey: [
+      'orders',
+      page,
+      limit,
+      order,
+      search,
+      tenantIds,
+      statuses,
+      currencies,
+    ],
     queryFn: () =>
       fetchOrders({
         page,
@@ -24,6 +40,8 @@ export function useOrders() {
         order,
         search: search || undefined,
         tenantIds,
+        status: statuses.length ? statuses : undefined,
+        currency: currencies.length ? currencies : undefined,
       }),
     gcTime: 0,
   })
@@ -64,6 +82,16 @@ export function useOrders() {
     setPage(1)
   }, [])
 
+  const handleStatusFilter = useCallback((val: OrderStatus[]) => {
+    setStatuses(val)
+    setPage(1)
+  }, [])
+
+  const handleCurrencyFilter = useCallback((val: OrderCurrency[]) => {
+    setCurrencies(val)
+    setPage(1)
+  }, [])
+
   function handlePageSizeChange(_current: number, size: number) {
     setLimit(size)
     setPage(1)
@@ -82,6 +110,8 @@ export function useOrders() {
     handleTableChange,
     handleSearch,
     handleTenantFilter,
+    handleStatusFilter,
+    handleCurrencyFilter,
     handlePageSizeChange,
   }
 }

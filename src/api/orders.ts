@@ -1,13 +1,28 @@
 import api from '../lib/axios'
 
-export type OrderStatus = 'pending' | 'processing' | 'completed' | 'cancelled'
+export const OrderCurrency = {
+  USD: 'USD',
+  EUR: 'EUR',
+  GBP: 'GBP',
+} as const
+
+export type OrderCurrency = (typeof OrderCurrency)[keyof typeof OrderCurrency]
+
+export const OrderStatus = {
+  PENDING: 'pending',
+  PROCESSING: 'processing',
+  COMPLETED: 'completed',
+  CANCELLED: 'cancelled',
+} as const
+
+export type OrderStatus = (typeof OrderStatus)[keyof typeof OrderStatus]
 
 export interface Order {
   id: number
   orderNumber: string
   status: OrderStatus
   totalAmount: string
-  currency: string
+  currency: OrderCurrency
   tenantId: number
   tenantName: string
   tenantSubDomain: string
@@ -22,6 +37,8 @@ export interface OrdersParams {
   tenantIds: number[]
   order: 'asc' | 'desc'
   search?: string
+  status?: OrderStatus[]
+  currency?: OrderCurrency[]
 }
 
 export interface OrdersResponse {
